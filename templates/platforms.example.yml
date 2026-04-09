@@ -1,0 +1,61 @@
+# rent-ops 平台抓取配置
+# 复制到项目根目录 platforms.yml 并根据需要启用/禁用平台
+
+platforms:
+  beike:
+    name: 贝壳找房
+    enabled: true
+    scan_url: "https://sz.ke.com/zufang/"
+    cookie_domain: .ke.com
+    strategy:
+      - cookie_playwright
+      - api
+
+  ziroom:
+    name: 自如
+    enabled: true
+    scan_url: "https://sz.ziroom.com/z/"
+    cookie_domain: .ziroom.com
+    strategy:
+      - cookie_playwright
+
+  douban:
+    name: 豆瓣租房
+    enabled: true
+    scan_query: "site:douban.com {city}租房 {keywords}"
+    strategy:
+      - websearch
+
+  xiaohongshu:
+    name: 小红书
+    enabled: true
+    scan_query: "site:xiaohongshu.com {city}租房 {keywords}"
+    strategy:
+      - websearch
+
+  58:
+    name: 58同城
+    enabled: false
+    scan_url: "https://sz.58.com/zufang/"
+    cookie_domain: .58.com
+    strategy:
+      - cookie_playwright
+
+  xianyu:
+    name: 闲鱼
+    enabled: false
+    scan_url: "https://www.xianyu.com/"
+    cookie_domain: .xianyu.com
+    strategy:
+      - cookie_playwright
+
+filters:
+  keywords_positive:
+    - 整租
+    - 独卫
+    - 近地铁
+  keywords_negative:
+    - 隔断
+    - 限女
+    - 仅短租
+    - 床位

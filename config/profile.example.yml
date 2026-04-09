@@ -1,0 +1,38 @@
+# rent-ops 用户配置
+# 复制到 config/profile.yml 并填入你的信息
+
+# 基本信息
+city: 深圳                          # 城市
+work_location: "南山区-深大站"       # 工作地点（地铁站或地址，用于通勤计算）
+
+# 筛选条件
+budget:
+  min: 2000                         # 月租下限（元）
+  max: 5000                         # 月租上限（元）
+type: 整租                           # 整租 / 合租
+rooms:                               # 接受的户型
+  - 1室1厅
+  - 2室1厅
+
+# 偏好（影响评分但不硬性过滤）
+preferences:
+  floor_min: 5                      # 偏好楼层下限
+  orientation: 南向                  # 偏好朝向
+  decoration:                       # 装修类型
+    - 精装
+    - 简装
+  must_have:                        # 必须有的设施
+    - 独卫
+    - 阳台
+
+# 红线（不满足直接过滤掉）
+dealbreakers:
+  - 隔断
+  - 地下室
+  - 无独卫
+  - 押金超过两个月
+
+# 通勤
+commute:
+  max_minutes: 45                   # 最大可接受通勤时间（分钟）
+  transport: 地铁                    # 主要通勤方式：地铁 / 公交 / 骑行 / 开车
