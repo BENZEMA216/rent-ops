@@ -15,15 +15,15 @@ Agent(
 
 ## 准备
 
-1. 读取 `platforms.yml` — 平台配置和筛选关键词
-2. 读取 `config/profile.yml` — 预算、户型等硬性条件
-3. 读取 `data/scan-history.tsv` — 已扫描过的 URL（如果文件存在）
-4. 读取 `data/listings.md` — 已在 tracker 中的房源
-5. 读取 `data/pipeline.md` — 已在队列中的房源
+1. 读取 `${CLAUDE_SKILL_DIR}/platforms.yml` — 平台配置和筛选关键词
+2. 读取 `${CLAUDE_SKILL_DIR}/config/profile.yml` — 预算、户型等硬性条件
+3. 读取 `${CLAUDE_SKILL_DIR}/data/scan-history.tsv` — 已扫描过的 URL（如果文件存在）
+4. 读取 `${CLAUDE_SKILL_DIR}/data/listings.md` — 已在 tracker 中的房源
+5. 读取 `${CLAUDE_SKILL_DIR}/data/pipeline.md` — 已在队列中的房源
 
 ## L1 — Cookie + Playwright 扫描
 
-对 `platforms.yml` 中 `enabled: true` 且 strategy 包含 `cookie_playwright` 的平台：
+对 `${CLAUDE_SKILL_DIR}/platforms.yml` 中 `enabled: true` 且 strategy 包含 `cookie_playwright` 的平台：
 
 ### 前提：Cookie 导入
 
@@ -91,13 +91,13 @@ $B snapshot -i
 ### 豆瓣（scripts/scrape_douban.py）
 
 ```bash
-python3 scripts/scrape_douban.py --stealth
+python3 ${CLAUDE_SKILL_DIR}/scripts/scrape_douban.py --stealth
 ```
 
 - 优先尝试 CDP 模式（接管 Arc 浏览器），降级为 playwright-stealth + Arc cookie 注入
 - 自动翻页浏览「深圳租房」小组最新帖子
 - 触发 misc/sorry 验证页时暂停等待人工过滑块
-- 输出：`data/douban_raw.jsonl` + `data/douban_filtered.jsonl`
+- 输出：`${CLAUDE_SKILL_DIR}/data/douban_raw.jsonl` + `${CLAUDE_SKILL_DIR}/data/douban_filtered.jsonl`
 - 依赖：`pip install playwright playwright-stealth`
 
 ### 小红书（MediaCrawler）
@@ -121,15 +121,15 @@ cd ~/code/MediaCrawler && /opt/homebrew/bin/python3.11 main.py --platform xhs --
 爬虫完成后，需要将结果整合到 rent-ops：
 1. 读取 douban_filtered.jsonl + MediaCrawler 输出
 2. 按 INCLUDE/EXCLUDE/AREA 正则过滤
-3. 写入 `data/listings.md` 和 `data/listings.json`（地图用）
-4. 更新 `data/pipeline.md`（待评估队列）
+3. 写入 `${CLAUDE_SKILL_DIR}/data/listings.md` 和 `${CLAUDE_SKILL_DIR}/data/listings.json`（地图用）
+4. 更新 `${CLAUDE_SKILL_DIR}/data/pipeline.md`（待评估队列）
 
 ## L3 — WebSearch 扫描
 
 对 strategy 包含 `websearch` 的平台：
 
 1. 构建搜索 query：
-   - 从 `platforms.yml` 读取 `scan_query` 模板
+   - 从 `${CLAUDE_SKILL_DIR}/platforms.yml` 读取 `scan_query` 模板
    - 替换 `{city}` 为 profile.yml 中的城市
    - 替换 `{keywords}` 为 filters.keywords_positive 中的关键词
 
@@ -160,13 +160,13 @@ cd ~/code/MediaCrawler && /opt/homebrew/bin/python3.11 main.py --platform xhs --
 ## 结果处理
 
 ### 加入 pipeline
-对每个通过筛选和去重的新房源，添加到 `data/pipeline.md` 的「待处理」区：
+对每个通过筛选和去重的新房源，添加到 `${CLAUDE_SKILL_DIR}/data/pipeline.md` 的「待处理」区：
 ```
 - [ ] {url} | {平台} | {小区/标题} {户型} {租金}
 ```
 
 ### 记录历史
-在 `data/scan-history.tsv` 中记录所有扫描到的 URL（无论是否通过筛选）：
+在 `${CLAUDE_SKILL_DIR}/data/scan-history.tsv` 中记录所有扫描到的 URL（无论是否通过筛选）：
 ```
 {url}\t{YYYY-MM-DD}\t{平台}\t{标题}\t{状态}
 ```

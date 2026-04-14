@@ -6,7 +6,7 @@
 
 ### 查看当前状态
 
-读取 `data/listings.md`，按用户需求展示：
+读取 `${CLAUDE_SKILL_DIR}/data/listings.md`，按用户需求展示：
 
 **默认视图：** 按状态分组展示
 

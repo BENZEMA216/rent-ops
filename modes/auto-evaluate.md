@@ -46,7 +46,7 @@
 
 在评估前对房源执行快速真伪校验（verify lite 模式，仅通用层 5 项检测）。
 
-**执行 `modes/verify.md` 中通用检测层的全部 5 项检查。**
+**执行 `${CLAUDE_SKILL_DIR}/modes/verify.md` 中通用检测层的全部 5 项检查。**
 
 使用步骤 0 已抓取的房源信息（户型、面积、价格、联系方式、发布时间）和即将进行的 WebSearch 结果（商圈均价）。
 
@@ -78,7 +78,7 @@
 
 ## 步骤 1 — 红线检查
 
-读取 `config/profile.yml` 中的 `dealbreakers` 列表。逐条检查：
+读取 `${CLAUDE_SKILL_DIR}/config/profile.yml` 中的 `dealbreakers` 列表。逐条检查：
 
 - 如果房源明确命中红线（如标注"隔断"、面积极小疑似隔断、明确无独卫等），**立即提醒用户**：
 
@@ -97,7 +97,7 @@
 
 ### 通勤
 - WebSearch `"{工作地点} 到 {小区名} 地铁"` 查询通勤信息
-- 读取 `config/profile.yml` 中的 `work_location` 和 `commute.transport`
+- 读取 `${CLAUDE_SKILL_DIR}/config/profile.yml` 中的 `work_location` 和 `commute.transport`
 - 估算通勤时间（精度为大致区间）
 
 ### 房况
@@ -126,14 +126,14 @@
 
 ## 步骤 3 — 生成评估报告
 
-按 `_shared.md` 中的 Report 格式，保存到 `reports/{###}-{小区名拼音}-{YYYY-MM-DD}.md`。
+按 `_shared.md` 中的 Report 格式，保存到 `${CLAUDE_SKILL_DIR}/reports/{###}-{小区名拼音}-{YYYY-MM-DD}.md`。
 
 - `{###}` = 现有 reports 中最大编号 + 1（3 位 zero-padded）
 - 如果 reports/ 为空，从 001 开始
 
 ## 步骤 4 — 更新 Tracker
 
-在 `data/listings.md` 中添加一行：
+在 `${CLAUDE_SKILL_DIR}/data/listings.md` 中添加一行：
 
 ```
 | {###} | {YYYY-MM-DD} | {平台} | {小区} | {户型} | {月租} | {评分} | 已评估 | [{###}](reports/{###}-{slug}-{date}.md) | {一句话备注} |

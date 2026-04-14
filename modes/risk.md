@@ -38,7 +38,7 @@ WebSearch 以下 query（每个 query 独立搜索）：
 - 价格异常检测
 - 平台专属检测（评论区、图片风险等）
 
-详见 `modes/verify.md`。
+详见 `${CLAUDE_SKILL_DIR}/modes/verify.md`。
 
 如果用户只提供了小区名（无具体链接），仍按以下规则检测：
 - `"{联系电话}" 租房` — 看同一号码是否在多个不同小区挂房

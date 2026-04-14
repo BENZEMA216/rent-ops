@@ -5,13 +5,13 @@
 ## 前提
 
 - 高德地图 JS API Key（Web端类型）— 需在 [console.amap.com](https://console.amap.com) 申请
-- API Key 和安全密钥已配置在 `data/map-view.html` 中
+- API Key 和安全密钥已配置在 `${CLAUDE_SKILL_DIR}/data/map-view.html` 中
 
 ## 执行
 
 ### 1. 确认数据文件
 
-检查 `data/listings.json` 是否存在且非空。如果不存在或为空：
+检查 `${CLAUDE_SKILL_DIR}/data/listings.json` 是否存在且非空。如果不存在或为空：
 - 提示用户先运行 `/rent scrape` 或 `/rent scan` 获取房源数据
 
 ### 2. 启动 HTTP 服务
@@ -19,7 +19,7 @@
 高德地图 JS API 不支持 `file://` 协议，必须通过 HTTP 访问：
 
 ```bash
-cd data && python3 -m http.server 8765 &
+cd ${CLAUDE_SKILL_DIR}/data && python3 -m http.server 8765 &
 ```
 
 检查端口是否已被占用（`lsof -i :8765`），如已占用则跳过启动。
@@ -56,7 +56,7 @@ open http://localhost:8765/map-view.html
 
 ## 更新地图数据
 
-地图数据来自 `data/listings.json`。更新流程：
+地图数据来自 `${CLAUDE_SKILL_DIR}/data/listings.json`。更新流程：
 
 1. 运行 `/rent scrape`（爬取新数据）
 2. 数据整合脚本会自动更新 `listings.json`
@@ -64,7 +64,7 @@ open http://localhost:8765/map-view.html
 
 ## API Key 配置
 
-用户需要在 `data/map-view.html` 中配置两个值：
+用户需要在 `${CLAUDE_SKILL_DIR}/data/map-view.html` 中配置两个值：
 
 ```html
 <script>

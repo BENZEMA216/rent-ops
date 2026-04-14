@@ -18,7 +18,7 @@ pip3 install playwright playwright-stealth && playwright install chromium
 
 ## 豆瓣爬虫
 
-**脚本：** `scripts/scrape_douban.py`
+**脚本：** `${CLAUDE_SKILL_DIR}/scripts/scrape_douban.py`
 
 ### 前提
 - 用户已有豆瓣账号，并在 Arc 浏览器中登录过豆瓣
@@ -28,20 +28,20 @@ pip3 install playwright playwright-stealth && playwright install chromium
 
 ```bash
 # 默认模式（自动尝试 CDP → stealth → 手动验证）
-python3 scripts/scrape_douban.py
+python3 ${CLAUDE_SKILL_DIR}/scripts/scrape_douban.py
 
 # 强制 stealth 模式（推荐，无需重启 Arc）
-python3 scripts/scrape_douban.py --stealth
+python3 ${CLAUDE_SKILL_DIR}/scripts/scrape_douban.py --stealth
 
 # 强制 CDP 模式（需先以调试模式启动 Arc）
 # 先运行：/Applications/Arc.app/Contents/MacOS/Arc --remote-debugging-port=9222
-python3 scripts/scrape_douban.py --cdp
+python3 ${CLAUDE_SKILL_DIR}/scripts/scrape_douban.py --cdp
 ```
 
 ### 输出
-- `data/douban_raw.jsonl` — 所有抓到的帖子（追加写入）
-- `data/douban_filtered.jsonl` — 匹配筛选条件的帖子（覆盖写入）
-- `data/douban_session.json` — 浏览器 session（后续复用）
+- `${CLAUDE_SKILL_DIR}/data/douban_raw.jsonl` — 所有抓到的帖子（追加写入）
+- `${CLAUDE_SKILL_DIR}/data/douban_filtered.jsonl` — 匹配筛选条件的帖子（覆盖写入）
+- `${CLAUDE_SKILL_DIR}/data/douban_session.json` — 浏览器 session（后续复用）
 
 ### 触发验证页时
 脚本检测到 `misc/sorry` 页面会：
@@ -72,7 +72,7 @@ python3 scripts/scrape_douban.py --cdp
 | `SAVE_DATA_OPTION` | `"jsonl"` | 输出格式 |
 | `HEADLESS` | `False` | 需要可见浏览器 |
 
-根据 `config/profile.yml` 中的城市、区域、户型生成关键词，更新到 `base_config.py`。
+根据 `${CLAUDE_SKILL_DIR}/config/profile.yml` 中的城市、区域、户型生成关键词，更新到 `base_config.py`。
 
 ### 运行
 
@@ -90,12 +90,12 @@ cd ~/code/MediaCrawler && /opt/homebrew/bin/python3.11 main.py --platform xhs --
 
 爬虫完成后，将结果合并到 rent-ops 数据：
 
-1. 读取 `data/douban_filtered.jsonl` + MediaCrawler 输出
+1. 读取 `${CLAUDE_SKILL_DIR}/data/douban_filtered.jsonl` + MediaCrawler 输出
 2. 按 profile.yml 中的条件过滤（区域、户型、预算、排除词）
 3. 去重（URL 精确匹配 + scan-history.tsv）
-4. 更新 `data/listings.md`（tracker）
-5. 更新 `data/listings.json`（地图数据）
-6. 记录到 `data/scan-history.tsv`
+4. 更新 `${CLAUDE_SKILL_DIR}/data/listings.md`（tracker）
+5. 更新 `${CLAUDE_SKILL_DIR}/data/listings.json`（地图数据）
+6. 记录到 `${CLAUDE_SKILL_DIR}/data/scan-history.tsv`
 
 ## 输出摘要
 

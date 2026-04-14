@@ -53,7 +53,7 @@
 **触发方式：** 对比月租与同区域同户型均价。
 
 - WebSearch `"{小区名} 租金" OR "{商圈} {户型} 租金均价"` 获取参考价
-- 如果 `data/listings.json` 中有同区域历史房源，可用作内部参考价
+- 如果 `${CLAUDE_SKILL_DIR}/data/listings.json` 中有同区域历史房源，可用作内部参考价
 
 **判定规则（当前价格）：**
 
@@ -65,7 +65,7 @@
 
 **判定规则（历史价格波动，如有历史数据）：**
 
-如果 `data/listings.json` 中该房源有历史挂牌价记录：
+如果 `${CLAUDE_SKILL_DIR}/data/listings.json` 中该房源有历史挂牌价记录：
 
 | 波动情况 | 等级 |
 |----------|------|
@@ -326,7 +326,7 @@
 
 ## 数据更新规则
 
-完整模式检测完成后，将结果写入 `data/listings.json` 对应房源条目的 `verify` 字段：
+完整模式检测完成后，将结果写入 `${CLAUDE_SKILL_DIR}/data/listings.json` 对应房源条目的 `verify` 字段：
 
 ```json
 {
@@ -344,7 +344,7 @@
 }
 ```
 
-如果 `data/listings.json` 中尚无该房源条目，创建新条目并包含 `verify` 字段。
+如果 `${CLAUDE_SKILL_DIR}/data/listings.json` 中尚无该房源条目，创建新条目并包含 `verify` 字段。
 
 ### 规则标识符索引
 
