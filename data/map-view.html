@@ -554,49 +554,48 @@ async function resolveAnchors() {
   if (!raw.length) return;
   document.getElementById('geo-status').textContent = `解析 ${raw.length} 个锚点…`;
 
-  for (const a of raw) {
-    // cache hit?
+  // 并发 geocode：对每个 anchor 并行发 AMap 请求，速度从 O(N × geocode_time) → O(max geocode_time)
+  const results = await Promise.all(raw.map(async (a) => {
     const cached = geoCacheGet(a.address);
-    if (cached) { ANCHORS.push({...a, pos: cached}); continue; }
-
+    if (cached) return {...a, pos: cached};
     const pos = await geocodeOne(a.address);
-    if (pos) {
-      geoCachePut(a.address, pos);
-      ANCHORS.push({...a, pos});
-    } else {
-      console.warn('锚点解析失败:', a.name, a.address);
-      ANCHORS.push({...a, pos: null});
-    }
-  }
+    if (pos) { geoCachePut(a.address, pos); return {...a, pos}; }
+    console.warn('锚点解析失败:', a.name, a.address);
+    return {...a, pos: null};
+  }));
+  ANCHORS.push(...results);
+
   document.getElementById('geo-status').textContent = '';
-  // 地图中心设为第一个锚点
   const first = ANCHORS.find(a => a.pos);
   if (first) map.setCenter(first.pos);
 }
 
 async function geocodeOne(addr) {
-  return new Promise(resolve => {
-    geocoder.getLocation(addr, (status, result) => {
-      if (status === 'complete' && result.geocodes?.length) {
-        const g = result.geocodes[0];
-        resolve([g.location.lng, g.location.lat]);
-      } else {
-        placeSearch.search(addr, (ps_status, ps_result) => {
-          if (ps_status === 'complete' && ps_result.poiList?.pois?.length) {
-            const poi = ps_result.poiList.pois[0];
-            resolve([poi.location.lng, poi.location.lat]);
-          } else resolve(null);
-        });
-      }
-    });
-  });
+  // 带超时，避免某个 callback 永不触发导致整个 boot 流程卡住
+  return Promise.race([
+    new Promise(resolve => {
+      geocoder.getLocation(addr, (status, result) => {
+        if (status === 'complete' && result.geocodes?.length) {
+          const g = result.geocodes[0];
+          resolve([g.location.lng, g.location.lat]);
+        } else {
+          placeSearch.search(addr, (ps_status, ps_result) => {
+            if (ps_status === 'complete' && ps_result.poiList?.pois?.length) {
+              const poi = ps_result.poiList.pois[0];
+              resolve([poi.location.lng, poi.location.lat]);
+            } else resolve(null);
+          });
+        }
+      });
+    }),
+    new Promise(resolve => setTimeout(() => resolve(null), 5000)),
+  ]);
 }
 
 function renderAnchors() {
   ANCHORS.forEach((a, i) => {
     if (!a.pos) return;
     const color = pickColor(i);
-    // marker
     const m = new AMap.Marker({
       position: a.pos, offset: new AMap.Pixel(-19, -19),
       content: `
@@ -621,6 +620,13 @@ function renderAnchors() {
     circle.setMap(map);
     anchorCircles.push(circle);
   });
+
+  // 自动 zoom 到包含所有锚点
+  if (anchorMarkers.length >= 2) {
+    try { map.setFitView(anchorMarkers, false, [80, 80, 80, 400]); } catch (e) {}
+  } else if (anchorMarkers.length === 1) {
+    map.setZoomAndCenter(13, ANCHORS.find(a => a.pos).pos);
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════════
