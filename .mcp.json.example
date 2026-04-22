@@ -1,0 +1,13 @@
+{
+  "_comment": "复制到 .mcp.json（同名不带 .example）并填入真 key。.mcp.json 已 gitignored。",
+  "_docs": "Claude Code 启动时自动加载本文件，把 MCP server 注册成可调用的 tool 集合。",
+  "mcpServers": {
+    "vigolive": {
+      "type": "http",
+      "url": "https://mcp.vigolive.cn/mcp/",
+      "headers": {
+        "X-API-Key": "vgk_live_替换为你的key"
+      }
+    }
+  }
+}

@@ -164,7 +164,23 @@ AI 助手环境没有交互式终端，需要提前准备好登录态：
 | MediaCrawler | 小红书爬虫 | `git clone https://github.com/NanmiCoder/MediaCrawler` + `pip install -r requirements.txt`（需 Python 3.11）|
 | 高德 JS API Key | 地图可视化（浏览器渲染） | [console.amap.com](https://console.amap.com) → 创建「Web端(JS API)」Key，填入 `data/map-view.html` |
 | 高德 Web 服务 Key | **通勤 + 便利维度硬数据** | [console.amap.com](https://console.amap.com) → 创建「Web服务」Key（另一种类型，不是 JS API），复制 `templates/amap.example.yml` 到 `config/amap.yml` 填 `web_service_key`。5000 次/天免费 |
+| 唯果直租 MCP | **直租房源数据源**（5 城） | 见下节 |
 | Arc 浏览器 | CDP 模式（最强反检测） | [arc.net](https://arc.net) |
+
+## 可选 MCP 数据源：唯果直租
+
+[唯果 vigolive](https://vigolive.cn) 是国内直租平台，提供**官方 MCP server**，让 Claude Code 直接拿到筛选后的直租房源（100% 直租、字段结构化、带坐标）。覆盖北京 / 上海 / 深圳 / 广州 / 杭州 5 城。
+
+**启用**（5 分钟）：
+
+1. 微信搜"**唯果租房**"小程序 → 我的 → **MCP 连接** → 生成 Key（`vgk_live_xxx`）
+2. 复制项目根目录的 `.mcp.json.example` 为 `.mcp.json`，填入 key
+3. 编辑 `platforms.yml`，把 `vigolive.enabled` 改 `true`
+4. Claude Code 重启后会自动加载 `mcp__vigolive__*` 工具
+
+**启用后的差异**：`/rent scan` 会在 L0 先调 `search_houses` / `search_by_commute` 拿结构化直租数据，爬虫作为兜底。
+
+**限制**：30 次/天免费配额 · 仅 5 城 · 只用 `search_*` 工具（他们的 `evaluate` / `verify` / `query_knowledge` 数据覆盖稀疏，rent-ops 自己的流程更强）。
 
 ## 通勤 + 便利：从软评分到硬数据
 

@@ -9,6 +9,30 @@
 # 豆瓣小组 ID 在 cities/{pinyin}.yml 的 douban.group_id 配置，不再在此处写死。
 
 platforms:
+  vigolive:
+    name: 唯果直租（MCP）
+    enabled: false        # 默认关，装了 vigolive MCP 的用户改 true
+    strategy:
+      - mcp               # 通过 Claude Code 的 MCP 集成调用，无需本地 HTTP 客户端
+    cities:               # 覆盖城市，其他城市不调
+      - 北京
+      - 上海
+      - 深圳
+      - 广州
+      - 杭州
+    mcp_server: vigolive  # 对应 .mcp.json 里的 server 名
+    tools:
+      - mcp__vigolive__search_houses
+      - mcp__vigolive__search_by_commute
+      - mcp__vigolive__get_house_detail
+    notes: |
+      唯果 vigolive（https://vigolive.cn）的官方 MCP server，提供**平台筛选后的直租房源**。
+      装法：复制项目根 .mcp.json.example 为 .mcp.json，填 vgk_live_xxx key（小程序"唯果租房"→我的→MCP 连接）。
+      30 次/天免费配额。
+      覆盖 5 城，其他城市由爬虫层（豆瓣/小红书/贝壳/58）兜底。
+      相比爬虫优势：100% 直租 + 结构化字段（坐标/地铁/图片齐全）；劣势：只覆盖唯果平台房源。
+      注意：evaluate_house / verify_house / query_knowledge 数据覆盖有限，建议用 rent-ops 本身的评分 + verify 流程。
+
   beike:
     name: 贝壳找房
     enabled: true

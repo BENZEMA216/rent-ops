@@ -20,6 +20,10 @@ config/amap.yml
 modes/_profile.md
 platforms.yml
 
+# MCP server config (may contain API keys)
+.mcp.json
+!.mcp.json.example
+
 # Python venv (created by setup.sh)
 .venv/
 

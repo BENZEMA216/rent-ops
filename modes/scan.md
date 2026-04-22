@@ -6,6 +6,28 @@
 
 **不要跳过任何步骤，不要调换顺序。**
 
+### Step 0: 结构化 MCP 数据源（如已配置）
+
+在爬虫之前，**先检查是否有可用的结构化 MCP 房源源**。当前支持：
+
+**vigolive（唯果直租）** — 如果 `platforms.yml` 中 `vigolive.enabled: true` 且当前 profile.city 在 `vigolive.cities` 列表里：
+
+1. 并发调用：
+   ```
+   mcp__vigolive__search_houses(city=profile.city, location=work_area,
+     price_min=budget.min, price_max=budget.max,
+     rent_type=1 if type=="整租" else 2,
+     bedrooms=[int(r[0]) for r in profile.rooms], page_size=20)
+   mcp__vigolive__search_by_commute(city=profile.city,
+     workplace=anchors[0].address, max_commute_minutes=30, limit=20)
+   ```
+2. 返回的 house 对象字段齐全（`house_id / compound / latitude / longitude /
+   rent_price_yuan / tags / near_subway`），直接写入 pipeline（无需再 geocode）
+3. **只覆盖 5 城（北京/上海/深圳/广州/杭州）**，其他城市跳过本步，走 Step 1 爬虫兜底
+4. **只用 search_*** 这两个工具当数据源。`evaluate_house` / `verify_house` /
+   `query_knowledge` 的覆盖太稀，继续走 rent-ops 本身的评分/verify 流程
+5. 30 次/天免费配额，超了自动重置（第二天）
+
 ### Step 1: 跑专用爬虫（豆瓣）
 
 立即执行，不要先做 WebSearch：

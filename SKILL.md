@@ -117,6 +117,7 @@ ${CLAUDE_SKILL_DIR}/scripts/doctor.sh
 | MediaCrawler | 小红书爬虫 | `git clone https://github.com/NanmiCoder/MediaCrawler` + `pip install -r requirements.txt`（需 Python 3.11）|
 | 高德地图 JS API Key | 地图可视化（浏览器） | [console.amap.com](https://console.amap.com) → 创建「Web端(JS API)」Key，填入 `data/map-view.html` |
 | 高德地图 Web 服务 Key | **通勤 + 便利维度硬数据**（通勤分钟数、POI 密度） | [console.amap.com](https://console.amap.com) → 创建「Web服务」Key（不同于 JS API），复制 `templates/amap.example.yml` 到 `config/amap.yml` 填 `web_service_key`。每日 5000 次免费 |
+| 唯果直租 MCP | **结构化直租房源数据源**（5 城：京/沪/深/广/杭） | 微信搜"唯果租房"小程序 → 我的 → MCP 连接 → 生成 Key。`cp .mcp.json.example .mcp.json` 填入 `vgk_live_xxx`。Claude Code 会自动加载 `mcp__vigolive__*` 工具。30 次/天免费 |
 | Arc 浏览器 | CDP 模式（最强反检测） | [arc.net](https://arc.net) |
 
 ---
